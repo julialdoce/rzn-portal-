@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fila de Motoristas - Raízen</title>
+    <style>
+        /* Estilos gerais para visualização em TV */
+        body { font-family: Arial, sans-serif; background-color: #F4F6F8; color: #333; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .container { width: 90%; max-width: 800px; background-color: #FFFFFF; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); }
+        
+        /* Posicionamento da logo e título */
+        .header { display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 20px; }
+        .logo { width: 50px; position: absolute; top: -10px; right: 10px; }
+        h2 { color: #660099; font-weight: bold; text-align: center; margin: 0; font-size: 2rem; }
+
+        /* Estilos da lista de motoristas */
+        .driver-list { list-style: none; padding: 0; margin: 20px 0; font-size: 1.5rem; }
+        .driver-list li { padding: 15px; border-bottom: 1px solid #DDD; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s; }
+        .driver-list li:hover { background-color: #f0f0f5; }
+        .driver-name { font-weight: bold; color: #333; }
+        .driver-time { color: #660099; }
+        
+        /* Rodapé da TV */
+        .footer { text-align: center; font-size: 1rem; color: #999; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <!-- Logo da Raízen no canto superior direito -->
+    <img src="https://logospng.org/download/raizen/logo-raizen-1024.png" alt="Raízen Logo" class="logo">
+
+    <div class="container">
+        <div class="header">
+            <h2>Fila de Motoristas</h2>
+        </div>
+
+        <ul class="driver-list" id="driverList">
+            <!-- Lista de motoristas preenchida dinamicamente -->
+        </ul>
+
+        <div class="footer">
+            <p>Raízen © 2024 - Todos os direitos reservados</p>
+        </div>
+    </div>
+
+    <script>
+        // Função para atualizar a lista de motoristas
+        function updateDriverList() {
+            // Exemplo de motoristas para simulação
+            const drivers = [
+                { name: 'Motorista A', time: '10:00' },
+                { name: 'Motorista B', time: '10:15' },
+                { name: 'Motorista C', time: '10:30' },
+                { name: 'Motorista D', time: '10:45' }
+            ];
+
+            // Limpa a lista antes de adicionar novos itens
+            const driverList = document.getElementById('driverList');
+            driverList.innerHTML = '';
+
+            // Adiciona os motoristas na lista
+            drivers.forEach(driver => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="driver-name">${driver.name}</span> <span class="driver-time">${driver.time}</span>`;
+                driverList.appendChild(li);
+            });
+        }
+
+        // Atualiza a lista a cada 10 segundos
+        setInterval(updateDriverList, 10000);
+        
+        // Inicializa a lista ao carregar a página
+        updateDriverList();
+    </script>
+</body>
+</html>
