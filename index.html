@@ -3,288 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Controle de EPIs</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>RAIZEN BSMA - Hub Corporativo</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <i class="fas fa-hard-hat"></i>
-                <h1>EPI Control</h1>
-            </div>
-            <div class="user-info">
-                <div class="user-type" id="userType">Admin</div>
-                <button class="btn-switch" id="switchUser">
-                    <i class="fas fa-user-cog"></i>
-                    Trocar Perfil
-                </button>
-            </div>
+    <div class="admin-bar">
+        <div>
+            <span>🔧 Modo Administrador</span>
+            <span id="lastUpdate">Última atualização: Hoje, 14:30</span>
         </div>
+        <div class="admin-controls">
+            <button class="admin-btn" onclick="toggleEditMode()">✏️ Editar</button>
+            <button class="admin-btn" onclick="saveChanges()">💾 Salvar</button>
+            <button class="admin-btn" onclick="viewHistory()">📈 Histórico</button>
+            <button class="admin-btn" onclick="publishChanges()">🚀 Publicar</button>
+        </div>
+    </div>
+
+    <header class="header">
+        <button class="edit-btn" onclick="editHeader()">✏️ Editar Cabeçalho</button>
+        <h1 contenteditable="false" id="mainTitle">🏢 RAIZEN BSMA</h1>
+        <p class="subtitle" contenteditable="false" id="subtitle">Business Solutions & Management Applications</p>
     </header>
 
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="container">
-            <button class="nav-item active" data-section="dashboard">
-                <i class="fas fa-chart-dashboard"></i>
-                Dashboard
-            </button>
-            <button class="nav-item admin-only" data-section="estoque">
-                <i class="fas fa-boxes"></i>
-                Estoque
-            </button>
-            <button class="nav-item" data-section="retirada">
-                <i class="fas fa-hand-paper"></i>
-                Retirada
-            </button>
-            <button class="nav-item" data-section="historico">
-                <i class="fas fa-history"></i>
-                Histórico
-            </button>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Dashboard Section -->
-            <section id="dashboard" class="section active">
-                <h2>Dashboard</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-hard-hat"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="totalEpis">0</h3>
-                            <p>Total de EPIs</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-warehouse"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="totalEstoque">0</h3>
-                            <p>Itens em Estoque</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="estoqueVermelho">0</h3>
-                            <p>Estoque Baixo</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar-day"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="retirasHoje">0</h3>
-                            <p>Retiradas Hoje</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="alerts-section">
-                    <h3>⚠️ Alertas de Estoque Baixo</h3>
-                    <div class="alerts-table" id="alertsTable">
-                        <p class="no-alerts">Nenhum alerta no momento</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Estoque Section -->
-            <section id="estoque" class="section admin-only">
-                <div class="section-header">
-                    <h2>Controle de Estoque</h2>
-                    <button class="btn btn-primary" id="addEpiBtn">
-                        <i class="fas fa-plus"></i>
-                        Adicionar EPI
-                    </button>
-                </div>
-                
-                <div class="estoque-grid" id="estoqueGrid">
-                    <!-- EPIs serão carregados aqui -->
-                </div>
-            </section>
-
-            <!-- Retirada Section -->
-            <section id="retirada" class="section">
-                <h2>Retirada de EPIs</h2>
-                
-                <!-- EPI Carousel -->
-                <div class="carousel-container">
-                    <button class="carousel-btn carousel-prev" id="carouselPrev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    
-                    <div class="carousel">
-                        <div class="carousel-track" id="carouselTrack">
-                            <!-- EPIs serão carregados aqui -->
-                        </div>
-                    </div>
-                    
-                    <button class="carousel-btn carousel-next" id="carouselNext">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-
-                <!-- Formulário de Retirada -->
-                <div class="form-container" id="formContainer" style="display: none;">
-                    <div class="form-card">
-                        <h3 id="formTitle">Retirar EPI</h3>
-                        <form id="retiradaForm">
-                            <div class="form-group">
-                                <label for="nomeCompleto">Nome Completo</label>
-                                <input type="text" id="nomeCompleto" required>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="dataRetirada">Data</label>
-                                    <input type="date" id="dataRetirada" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="horaRetirada">Hora</label>
-                                    <input type="time" id="horaRetirada" required>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="tamanhoEpi">Tamanho</label>
-                                    <select id="tamanhoEpi" required>
-                                        <option value="">Selecione o tamanho</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="quantidadeRetirada">Quantidade</label>
-                                    <input type="number" id="quantidadeRetirada" min="1" required>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Assinatura Digital</label>
-                                <div class="signature-container">
-                                    <canvas id="signatureCanvas" width="400" height="200"></canvas>
-                                    <button type="button" class="btn-clear-signature" id="clearSignature">
-                                        <i class="fas fa-eraser"></i>
-                                        Limpar
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-secondary" id="cancelForm">
-                                    Cancelar
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-check"></i>
-                                    Confirmar Retirada
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Histórico Section -->
-            <section id="historico" class="section">
-                <div class="section-header">
-                    <h2>Histórico de Retiradas</h2>
-                    <div class="filter-controls">
-                        <input type="date" id="filtroData" class="form-control">
-                        <input type="text" id="filtroNome" placeholder="Filtrar por nome..." class="form-control">
-                    </div>
-                </div>
-                
-                <div class="historico-list" id="historicoList">
-                    <!-- Histórico será carregado aqui -->
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Modal para Adicionar EPI -->
-    <div class="modal" id="addEpiModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Adicionar Novo EPI</h3>
-                <button class="modal-close" id="closeModal">
-                    <i class="fas fa-times"></i>
-                </button>
+    <div class="container">
+        <div class="news-banner" id="newsBanner">
+            <div>
+                <strong>🔥 Novidade:</strong> <span contenteditable="false" id="newsText">Nova campanha "Raizen Verde" em andamento - Participe!</span>
             </div>
-            <form id="addEpiForm">
-                <div class="form-group">
-                    <label for="nomeEpi">Nome do EPI</label>
-                    <input type="text" id="nomeEpi" required>
+            <button class="close-btn" onclick="closeBanner()">&times;</button>
+        </div>
+
+        <div class="quick-actions">
+            <div class="quick-action" onclick="quickAction('emergency')">
+                <div class="icon">🚨</div>
+                <div class="title">Emergência</div>
+                <div class="subtitle">Procedimentos rápidos</div>
+                <div class="status-indicator"></div>
+            </div>
+            <div class="quick-action" onclick="quickAction('training')">
+                <div class="icon">🎓</div>
+                <div class="title">Treinamentos</div>
+                <div class="subtitle">Cursos disponíveis</div>
+                <div class="status-indicator alert"></div>
+            </div>
+            <div class="quick-action" onclick="quickAction('reports')">
+                <div class="icon">📊</div>
+                <div class="title">Relatórios</div>
+                <div class="subtitle">Métricas e KPIs</div>
+                <div class="status-indicator"></div>
+            </div>
+            <div class="quick-action" onclick="quickAction('calendar')">
+                <div class="icon">📅</div>
+                <div class="title">Agenda</div>
+                <div class="subtitle">Eventos e prazos</div>
+                <div class="status-indicator inactive"></div>
+            </div>
+        </div>
+
+        <div class="sections-grid" id="sectionsGrid">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">📂 Documentos Importantes</h3>
+                    <div class="section-actions">
+                        <button class="action-btn" onclick="editSection(this)">✏️</button>
+                        <button class="action-btn" onclick="deleteSection(this)">🗑️</button>
+                    </div>
                 </div>
-                
+                <div class="content-area">
+                    <ul>
+                        <li><a href="#" class="doc-link">📄 Planilha de Controle - Junho 2025</a></li>
+                        <li><a href="#" class="doc-link">📊 Relatório Mensal - Maio 2025</a></li>
+                        <li><a href="#" class="doc-link">📑 Procedimentos Operacionais Padrão</a></li>
+                    </ul>
+                </div>
+                <div class="update-info">
+                    <span>Por: Administração</span>
+                    <span>Hoje, 10:30</span>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">🛡️ EPI e Estoque</h3>
+                    <div class="section-actions">
+                        <button class="action-btn" onclick="editSection(this)">✏️</button>
+                        <button class="action-btn" onclick="deleteSection(this)">🗑️</button>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <p>Controle de EPIs disponíveis e sistema de requisição:</p>
+                    <div class="quick-links">
+                        <a href="#" class="quick-link">🔍 Consultar Estoque</a>
+                        <a href="#" class="quick-link">🔄 Solicitar Reposição</a>
+                        <a href="#" class="quick-link">📝 Relatar Problemas</a>
+                    </div>
+                </div>
+                <div class="update-info">
+                    <span>Por: Segurança do Trabalho</span>
+                    <span>Ontem, 16:45</span>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">🌐 Links Úteis</h3>
+                    <div class="section-actions">
+                        <button class="action-btn" onclick="editSection(this)">✏️</button>
+                        <button class="action-btn" onclick="deleteSection(this)">🗑️</button>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <div class="links-grid">
+                        <a href="#" class="system-link">📊 Sistema de Gestão</a>
+                        <a href="#" class="system-link">📧 Webmail Corporativo</a>
+                        <a href="#" class="system-link">👥 Portal RH</a>
+                        <a href="#" class="system-link">📅 Calendário Empresarial</a>
+                    </div>
+                </div>
+                <div class="update-info">
+                    <span>Por: TI</span>
+                    <span>02/06, 14:20</span>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">📢 Avisos e Comunicados</h3>
+                    <div class="section-actions">
+                        <button class="action-btn" onclick="editSection(this)">✏️</button>
+                        <button class="action-btn" onclick="deleteSection(this)">🗑️</button>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <div class="notice">
+                        <strong>❗ Manutenção Programada</strong>
+                        <p>Sistema ficará indisponível no sábado, 08/06, das 8h às 12h.</p>
+                    </div>
+                    <div class="notice">
+                        <strong>🎉 Evento Corporativo</strong>
+                        <p>Confira a programação da Semana da Segurança no link abaixo.</p>
+                    </div>
+                </div>
+                <div class="update-info">
+                    <span>Por: Comunicação</span>
+                    <span>01/06, 09:15</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="floating-add" onclick="addNewSection()" title="Adicionar Nova Seção">+</button>
+
+    <!-- Modal para adicionar/editar seções -->
+    <div class="modal" id="sectionModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2>Nova Seção</h2>
+            <form id="sectionForm">
                 <div class="form-group">
-                    <label for="iconeEpi">Ícone</label>
-                    <select id="iconeEpi" required>
-                        <option value="fas fa-hard-hat">Capacete</option>
-                        <option value="fas fa-eye">Óculos</option>
-                        <option value="fas fa-hand-paper">Luvas</option>
-                        <option value="fas fa-shoe-prints">Calçados</option>
-                        <option value="fas fa-tshirt">Uniforme</option>
-                        <option value="fas fa-mask">Máscara</option>
-                        <option value="fas fa-shield-alt">Protetor</option>
+                    <label for="sectionIcon">Ícone:</label>
+                    <select id="sectionIcon">
+                        <option value="📂">📂 Documentos</option>
+                        <option value="🛡️">🛡️ EPI/Segurança</option>
+                        <option value="🌐">🌐 Links</option>
+                        <option value="📢">📢 Avisos</option>
+                        <option value="👥">👥 RH</option>
+                        <option value="📊">📊 Relatórios</option>
+                        <option value="⚡">⚡ Operações</option>
+                        <option value="🏭">🏭 Produção</option>
                     </select>
                 </div>
-                
-                <div class="tamanhos-section">
-                    <label>Tamanhos e Quantidades</label>
-                    <div id="tamanhosContainer">
-                        <div class="tamanho-item">
-                            <input type="text" placeholder="Tamanho (ex: P, M, G, 8, 9)" class="tamanho-input" required>
-                            <input type="number" placeholder="Quantidade" class="quantidade-input" min="0" required>
-                            <button type="button" class="btn-remove-tamanho">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-secondary" id="addTamanho">
-                        <i class="fas fa-plus"></i>
-                        Adicionar Tamanho
-                    </button>
+                <div class="form-group">
+                    <label for="sectionTitle">Título:</label>
+                    <input type="text" id="sectionTitle" placeholder="Digite o título da seção">
                 </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelAddEpi">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
-                        Salvar EPI
-                    </button>
+                <div class="form-group">
+                    <label for="sectionContent">Conteúdo:</label>
+                    <textarea id="sectionContent" placeholder="Descreva o conteúdo da seção..."></textarea>
                 </div>
+                <button type="submit" class="btn-primary">Criar Seção</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal para Ver Detalhes -->
-    <div class="modal" id="detailsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detalhes da Retirada</h3>
-                <button class="modal-close" id="closeDetailsModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="detailsContent">
-                <!-- Detalhes serão carregados aqui -->
-            </div>
-        </div>
-    </div>
+    <footer class="footer">
+        <p>&copy; 2025 Raizen BSMA - Sistema de Gestão Corporativa</p>
+        <p>Última sincronização: <span id="syncTime">03/06/2025 14:30:45</span></p>
+    </footer>
 
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
